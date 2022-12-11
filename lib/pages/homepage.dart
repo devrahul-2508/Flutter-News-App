@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -5,6 +6,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter_news_app/models/article.dart';
 import 'package:flutter_news_app/models/newsrespone.dart';
 import 'package:flutter_news_app/network/dio_client.dart';
+import 'package:flutter_news_app/widgets/headline_card.dart';
+import 'package:flutter_news_app/widgets/news_tile.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -23,11 +26,11 @@ void getArticle() async {
 
     // Parsing the raw JSON data to the User class
 
-    print(articledata.data);
+    // print(articledata.data);
     NewsResponse response = NewsResponse.fromJson(articledata.data.toString());
-    //List<Article> articles = response.articles;
+    List<Article> articles = response.articles;
 
-    //print(response);
+    print(articles);
   } catch (e) {
     print(e);
   }
@@ -40,6 +43,19 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     getArticle();
     super.initState();
+  }
+
+  Widget buildNewsRecycler(BuildContext context) {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        child: ListView.builder(
+            itemCount: 3,
+            itemBuilder: (context, index) {
+              return NewsTile();
+            }),
+      ),
+    );
   }
 
   Widget buildChipWidgets(BuildContext context) {
@@ -95,9 +111,9 @@ class _HomePageState extends State<HomePage> {
         appBar: AppBar(
           title: Text(
             "Newzia",
-            style: TextStyle(color: Colors.black),
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
           ),
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.transparent,
           actions: <Widget>[
             IconButton(
               icon: Icon(
@@ -115,73 +131,59 @@ class _HomePageState extends State<HomePage> {
         body: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(30, 20, 30, 10),
-              child: Stack(children: [
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 350,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30.0),
-                      gradient: LinearGradient(
-                        colors: [
-                          Colors.grey,
-                          Theme.of(context).colorScheme.surface,
-                        ],
-                        stops: [0, 0.8],
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.black26,
-                            offset: Offset(0.0, 2.0),
-                            blurRadius: 6.0)
-                      ]),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(30.0),
-                    child: Image(
-                      image: AssetImage("assets/images/messi.png"),
-                      fit: BoxFit.cover,
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.grey,
+                        Theme.of(context).colorScheme.surface,
+                      ],
+                      stops: [0, 0.8],
                     ),
-                  ),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.black26,
+                          offset: Offset(0.0, 2.0),
+                          blurRadius: 6.0)
+                    ]),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(30),
+                  child: CarouselSlider(
+                      items: [
+                        HeadLineCard(
+                          image: "assets/images/messi.png",
+                          text:
+                              "Messi leads Argentina to 2-0 win over Mexico at World Cup",
+                        ),
+                        HeadLineCard(
+                          image: "assets/images/gwagon.jpg",
+                          text: "G Wagon waiting period go upto 15 months",
+                        )
+                      ],
+                      options: CarouselOptions(
+                          height: 400,
+                          aspectRatio: 16 / 9,
+                          viewportFraction: 1,
+                          initialPage: 0,
+                          enableInfiniteScroll: true,
+                          reverse: false,
+                          autoPlay: true,
+                          autoPlayInterval: Duration(seconds: 3),
+                          autoPlayAnimationDuration:
+                              Duration(milliseconds: 800),
+                          autoPlayCurve: Curves.fastOutSlowIn,
+                          enlargeFactor: 0.3,
+                          scrollDirection: Axis.horizontal)),
                 ),
-                Container(
-                  height: 350.0,
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(30.0),
-                      gradient: LinearGradient(
-                          begin: FractionalOffset.topCenter,
-                          end: FractionalOffset.bottomCenter,
-                          colors: [
-                            Colors.grey.withOpacity(0.0),
-                            Colors.black,
-                          ],
-                          stops: [
-                            0.0,
-                            1.0
-                          ])),
-                ),
-                Positioned(
-                  bottom: 20,
-                  left: 10.0,
-                  right: 20.0,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                    child: Text(
-                      "Messi leads Argentina to 2-0 win over Mexico at World Cup",
-                      maxLines: 2,
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                )
-              ]),
+              ),
             ),
             SizedBox(
               height: 20,
             ),
-            buildChipWidgets(context)
+            buildChipWidgets(context),
+            buildNewsRecycler(context)
           ],
         ));
   }

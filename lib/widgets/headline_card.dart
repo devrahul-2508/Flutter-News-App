@@ -12,12 +12,13 @@ class HeadLineCard extends StatelessWidget {
 
   final String image;
   final String text;
+  
 
   @override
   Widget build(BuildContext context) {
     return Stack(children: [
       Container(
-        height: 380,
+        height: 400,
         child: ClipRRect(
           child: Image(
             image: AssetImage(image),
@@ -26,7 +27,7 @@ class HeadLineCard extends StatelessWidget {
         ),
       ),
       Container(
-        height: 400.0,
+        height: 430.0,
         decoration: BoxDecoration(
             color: Colors.white,
             gradient: LinearGradient(

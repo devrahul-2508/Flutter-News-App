@@ -16,57 +16,75 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-void getArticle() async {
+NewsResponse? response;
+NewsResponse? headerresponse;
+
+Future getArticle(String category) async {
   try {
     // Perform GET request to the endpoint "/users/<id>"
     var articledata = await DioClient().dio.get(
-        "https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=bb5742eede6549cd938e191f9b5919b6");
+        "https://newsapi.org/v2/top-headlines?country=in&category=${category}&apiKey=bb5742eede6549cd938e191f9b5919b6");
 
     // Prints the raw data returned by the server
 
     // Parsing the raw JSON data to the User class
 
     // print(articledata.data);
-    NewsResponse response = NewsResponse.fromJson(articledata.data.toString());
-    List<Article> articles = response.articles;
+    response = NewsResponse.fromJson(articledata.data.toString());
+    print(response);
+  } catch (e) {
+    print(e);
+  }
+}
 
-    print(articles);
+Future fetchTopHeadlines() async {
+  try {
+    var articledata = await DioClient().dio.get(
+        "https://newsapi.org/v2/top-headlines?country=us&apiKey=bb5742eede6549cd938e191f9b5919b6");
+    headerresponse = NewsResponse.fromJson(articledata.data.toString());
   } catch (e) {
     print(e);
   }
 }
 
 int selectedIndex = 0;
+List<String> categories = [
+  "Sports",
+  "Business",
+  "Finance",
+  "Automobiles",
+  "Health"
+];
 
 class _HomePageState extends State<HomePage> {
   @override
   void initState() {
-    getArticle();
+    getArticle(categories[selectedIndex]);
     super.initState();
   }
 
   Widget buildNewsRecycler(BuildContext context) {
     return Expanded(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        child: ListView.builder(
-            itemCount: 3,
-            itemBuilder: (context, index) {
-              return NewsTile();
-            }),
-      ),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          child: FutureBuilder(
+              future: getArticle(categories[selectedIndex]),
+              builder: (context, snapshot) {
+                return (response == null)
+                    ? Center(
+                        child: CircularProgressIndicator(
+                        color: Color(0xff192e51),
+                      ))
+                    : ListView.builder(
+                        itemCount: response?.articles.length,
+                        itemBuilder: (context, index) {
+                          return NewsTile(article: response!.articles[index]);
+                        });
+              })),
     );
   }
 
   Widget buildChipWidgets(BuildContext context) {
-    List<String> categories = [
-      "Sports",
-      "Business",
-      "Finance",
-      "Automobiles",
-      "Health"
-    ];
-
     return Container(
       width: MediaQuery.of(context).size.width,
       height: 40,
@@ -82,6 +100,8 @@ class _HomePageState extends State<HomePage> {
                   setState(() {
                     selectedIndex = index;
                     print(selectedIndex);
+                    response = null;
+                    getArticle(categories[selectedIndex]);
                   });
                 }),
                 child: Chip(

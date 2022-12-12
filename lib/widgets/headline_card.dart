@@ -2,17 +2,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_news_app/models/article.dart';
 
 class HeadLineCard extends StatelessWidget {
   const HeadLineCard({
     Key? key,
-    required this.image,
-    required this.text,
+    required this.article,
   }) : super(key: key);
 
-  final String image;
-  final String text;
-  
+  final Article article;
 
   @override
   Widget build(BuildContext context) {
@@ -20,10 +18,12 @@ class HeadLineCard extends StatelessWidget {
       Container(
         height: 400,
         child: ClipRRect(
-          child: Image(
-            image: AssetImage(image),
-            fit: BoxFit.cover,
-          ),
+          child: (article.urlToImage!=null)
+              ? Image(
+                  image: NetworkImage(article.urlToImage!),
+                  fit: BoxFit.cover,
+                )
+              : Container(),
         ),
       ),
       Container(
@@ -49,7 +49,7 @@ class HeadLineCard extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 5.0),
           child: Text(
-            text,
+            article.title!,
             maxLines: 2,
             style: TextStyle(
                 color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),

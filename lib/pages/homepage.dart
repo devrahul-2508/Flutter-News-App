@@ -40,7 +40,7 @@ Future getArticle(String category) async {
 Future fetchTopHeadlines() async {
   try {
     var articledata = await DioClient().dio.get(
-        "https://newsapi.org/v2/top-headlines?country=us&apiKey=bb5742eede6549cd938e191f9b5919b6");
+        "https://newsapi.org/v2/top-headlines?country=in&apiKey=bb5742eede6549cd938e191f9b5919b6");
     headerresponse = NewsResponse.fromJson(articledata.data.toString());
   } catch (e) {
     print(e);
@@ -49,17 +49,20 @@ Future fetchTopHeadlines() async {
 
 int selectedIndex = 0;
 List<String> categories = [
+  "All",
+  "Technology",
+  "Science",
   "Sports",
+  "General",
   "Business",
-  "Finance",
-  "Automobiles",
-  "Health"
+  "Entertainment"
 ];
 
 class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     getArticle(categories[selectedIndex]);
+    fetchTopHeadlines();
     super.initState();
   }
 
@@ -170,32 +173,36 @@ class _HomePageState extends State<HomePage> {
                     ]),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(30),
-                  child: CarouselSlider(
-                      items: [
-                        HeadLineCard(
-                          image: "assets/images/messi.png",
-                          text:
-                              "Messi leads Argentina to 2-0 win over Mexico at World Cup",
-                        ),
-                        HeadLineCard(
-                          image: "assets/images/gwagon.jpg",
-                          text: "G Wagon waiting period go upto 15 months",
-                        )
-                      ],
-                      options: CarouselOptions(
-                          height: 400,
-                          aspectRatio: 16 / 9,
-                          viewportFraction: 1,
-                          initialPage: 0,
-                          enableInfiniteScroll: true,
-                          reverse: false,
-                          autoPlay: true,
-                          autoPlayInterval: Duration(seconds: 3),
-                          autoPlayAnimationDuration:
-                              Duration(milliseconds: 800),
-                          autoPlayCurve: Curves.fastOutSlowIn,
-                          enlargeFactor: 0.3,
-                          scrollDirection: Axis.horizontal)),
+                  child: FutureBuilder(
+                      future: fetchTopHeadlines(),
+                      builder: ((context, snapshot) {
+                        return (response == null)
+                            ? Center(
+                                child: CircularProgressIndicator(
+                                color: Color(0xff192e51),
+                              ))
+                            : CarouselSlider.builder(
+                                itemCount: headerresponse!.articles.length,
+                                itemBuilder: (BuildContext context,
+                                        int itemIndex, int pageViewIndex) =>
+                                    HeadLineCard(
+                                        article: headerresponse!
+                                            .articles[itemIndex]),
+                                options: CarouselOptions(
+                                    height: 400,
+                                    aspectRatio: 16 / 9,
+                                    viewportFraction: 1,
+                                    initialPage: 0,
+                                    enableInfiniteScroll: true,
+                                    reverse: false,
+                                    autoPlay: true,
+                                    autoPlayInterval: Duration(seconds: 5),
+                                    autoPlayAnimationDuration:
+                                        Duration(milliseconds: 500),
+                                    autoPlayCurve: Curves.fastOutSlowIn,
+                                    enlargeFactor: 0.3,
+                                    scrollDirection: Axis.horizontal));
+                      })),
                 ),
               ),
             ),

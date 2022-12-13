@@ -176,7 +176,7 @@ class _HomePageState extends State<HomePage> {
                   child: FutureBuilder(
                       future: fetchTopHeadlines(),
                       builder: ((context, snapshot) {
-                        return (response == null)
+                        return (headerresponse == null)
                             ? Center(
                                 child: CircularProgressIndicator(
                                 color: Color(0xff192e51),

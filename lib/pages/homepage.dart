@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:fade_shimmer/fade_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_news_app/models/newsrespone.dart';
 import 'package:flutter_news_app/network/dio_client.dart';
 import 'package:flutter_news_app/widgets/headline_card.dart';
 import 'package:flutter_news_app/widgets/news_tile.dart';
+import 'package:shimmer/shimmer.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -17,13 +19,20 @@ class HomePage extends StatefulWidget {
 }
 
 NewsResponse? response;
-NewsResponse? headerresponse;
+NewsResponse? headerresponse = null;
+bool _enabled = false;
 
 Future getArticle(String category) async {
   try {
     // Perform GET request to the endpoint "/users/<id>"
-    var articledata = await DioClient().dio.get(
-        "https://newsapi.org/v2/top-headlines?country=in&category=${category}&apiKey=bb5742eede6549cd938e191f9b5919b6");
+    var articledata;
+    if (category == "All") {
+      articledata = await DioClient().dio.get(
+          "https://newsapi.org/v2/top-headlines?country=in&apiKey=bb5742eede6549cd938e191f9b5919b6");
+    } else {
+      articledata = await DioClient().dio.get(
+          "https://newsapi.org/v2/top-headlines?country=in&category=${category}&apiKey=bb5742eede6549cd938e191f9b5919b6");
+    }
 
     // Prints the raw data returned by the server
 
@@ -39,8 +48,11 @@ Future getArticle(String category) async {
 
 Future fetchTopHeadlines() async {
   try {
+    
+
     var articledata = await DioClient().dio.get(
         "https://newsapi.org/v2/top-headlines?country=in&apiKey=bb5742eede6549cd938e191f9b5919b6");
+    _enabled = false;
     headerresponse = NewsResponse.fromJson(articledata.data.toString());
   } catch (e) {
     print(e);
@@ -154,58 +166,56 @@ class _HomePageState extends State<HomePage> {
         body: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
-                    gradient: LinearGradient(
-                      colors: [
-                        Colors.grey,
-                        Theme.of(context).colorScheme.surface,
-                      ],
-                      stops: [0, 0.8],
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                          color: Colors.black26,
-                          offset: Offset(0.0, 2.0),
-                          blurRadius: 6.0)
-                    ]),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(30),
-                  child: FutureBuilder(
-                      future: fetchTopHeadlines(),
-                      builder: ((context, snapshot) {
-                        return (headerresponse == null)
-                            ? Center(
-                                child: CircularProgressIndicator(
-                                color: Color(0xff192e51),
-                              ))
-                            : CarouselSlider.builder(
-                                itemCount: headerresponse!.articles.length,
-                                itemBuilder: (BuildContext context,
-                                        int itemIndex, int pageViewIndex) =>
-                                    HeadLineCard(
-                                        article: headerresponse!
-                                            .articles[itemIndex]),
-                                options: CarouselOptions(
-                                    height: 400,
-                                    aspectRatio: 16 / 9,
-                                    viewportFraction: 1,
-                                    initialPage: 0,
-                                    enableInfiniteScroll: true,
-                                    reverse: false,
-                                    autoPlay: true,
-                                    autoPlayInterval: Duration(seconds: 5),
-                                    autoPlayAnimationDuration:
-                                        Duration(milliseconds: 500),
-                                    autoPlayCurve: Curves.fastOutSlowIn,
-                                    enlargeFactor: 0.3,
-                                    scrollDirection: Axis.horizontal));
-                      })),
-                ),
-              ),
-            ),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Container(
+                    height: 400.0,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.grey,
+                            Theme.of(context).colorScheme.surface,
+                          ],
+                          stops: [0, 0.8],
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.black26,
+                              offset: Offset(0.0, 2.0),
+                              blurRadius: 6.0)
+                        ]),
+                    child: ClipRRect(
+                        borderRadius: BorderRadius.circular(30),
+                        child: FutureBuilder(
+                            future: fetchTopHeadlines(),
+                            builder: ((context, snapshot) {
+                              return (headerresponse == null)
+                                  ? ShimmerHeader()
+                                  : CarouselSlider.builder(
+                                      itemCount:
+                                          headerresponse!.articles.length,
+                                      itemBuilder: (BuildContext context,
+                                              int itemIndex,
+                                              int pageViewIndex) =>
+                                          HeadLineCard(
+                                              article: headerresponse!
+                                                  .articles[itemIndex]),
+                                      options: CarouselOptions(
+                                          height: 400,
+                                          aspectRatio: 16 / 9,
+                                          viewportFraction: 1,
+                                          initialPage: 0,
+                                          enableInfiniteScroll: true,
+                                          reverse: false,
+                                          autoPlay: true,
+                                          autoPlayInterval:
+                                              Duration(seconds: 5),
+                                          autoPlayAnimationDuration:
+                                              Duration(milliseconds: 500),
+                                          autoPlayCurve: Curves.fastOutSlowIn,
+                                          enlargeFactor: 0.3,
+                                          scrollDirection: Axis.horizontal));
+                            }))))),
             SizedBox(
               height: 20,
             ),
@@ -213,5 +223,21 @@ class _HomePageState extends State<HomePage> {
             buildNewsRecycler(context)
           ],
         ));
+  }
+}
+
+class ShimmerHeader extends StatelessWidget {
+  const ShimmerHeader({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+     return FadeShimmer(
+      height: 400,
+      width: double.maxFinite,
+              baseColor: Colors.grey.shade300,
+              highlightColor: Colors.grey.shade900,
+              
+             );
+        
   }
 }

@@ -18,24 +18,26 @@ class NewsTile extends StatelessWidget {
             color: Color(0xffbe9e9f0),
             borderRadius: BorderRadius.circular(20.0)),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-              child: Container(
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20.0)),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20.0),
-                    child: Image(
-                      width: 100.0,
-                      height: 120,
-                      image: NetworkImage(article.urlToImage!),                      
-                                            fit: BoxFit.cover,
-                    ),
-                  )),
-            ),
+            (article.urlToImage != null)
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 20),
+                    child: Container(
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20.0)),
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.circular(20.0),
+                            child: Image(
+                              width: 100.0,
+                              height: 120,
+                              image: NetworkImage(article.urlToImage!),
+                              fit: BoxFit.cover,
+                            ))),
+                  )
+                : Padding(padding: EdgeInsets.symmetric(vertical: 60)),
             Container(
               width: 180,
               child: Column(

@@ -18,7 +18,7 @@ class HeadLineCard extends StatelessWidget {
       Container(
         height: 400,
         child: ClipRRect(
-          child: (article.urlToImage!=null)
+          child: (article.urlToImage!.isNotEmpty)
               ? Image(
                   image: NetworkImage(article.urlToImage!),
                   fit: BoxFit.cover,

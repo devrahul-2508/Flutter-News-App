@@ -7,6 +7,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_news_app/models/article.dart';
 import 'package:flutter_news_app/models/newsrespone.dart';
 import 'package:flutter_news_app/network/dio_client.dart';
+import 'package:flutter_news_app/pages/news_detail_page.dart';
 import 'package:flutter_news_app/widgets/headline_card.dart';
 import 'package:flutter_news_app/widgets/news_tile.dart';
 import 'package:shimmer/shimmer.dart';
@@ -48,8 +49,6 @@ Future getArticle(String category) async {
 
 Future fetchTopHeadlines() async {
   try {
-    
-
     var articledata = await DioClient().dio.get(
         "https://newsapi.org/v2/top-headlines?country=in&apiKey=bb5742eede6549cd938e191f9b5919b6");
     _enabled = false;
@@ -93,7 +92,12 @@ class _HomePageState extends State<HomePage> {
                     : ListView.builder(
                         itemCount: response?.articles.length,
                         itemBuilder: (context, index) {
-                          return NewsTile(article: response!.articles[index]);
+                        
+                          return GestureDetector(
+                            
+                            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context)=> NewsDetailScreen(article: response!.articles[index] ))),
+                            
+                            child: NewsTile(article: response!.articles[index]));
                         });
               })),
     );
@@ -209,9 +213,9 @@ class _HomePageState extends State<HomePage> {
                                           reverse: false,
                                           autoPlay: true,
                                           autoPlayInterval:
-                                              Duration(seconds: 5),
+                                              Duration(seconds: 2),
                                           autoPlayAnimationDuration:
-                                              Duration(milliseconds: 500),
+                                              Duration(milliseconds: 200),
                                           autoPlayCurve: Curves.fastOutSlowIn,
                                           enlargeFactor: 0.3,
                                           scrollDirection: Axis.horizontal));
@@ -231,13 +235,11 @@ class ShimmerHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-     return FadeShimmer(
+    return FadeShimmer(
       height: 400,
       width: double.maxFinite,
-              baseColor: Colors.grey.shade300,
-              highlightColor: Colors.grey.shade900,
-              
-             );
-        
+      baseColor: Colors.grey.shade300,
+      highlightColor: Colors.grey.shade900,
+    );
   }
 }

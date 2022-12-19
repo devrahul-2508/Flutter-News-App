@@ -30,11 +30,14 @@ class NewsTile extends StatelessWidget {
                             borderRadius: BorderRadius.circular(20.0)),
                         child: ClipRRect(
                             borderRadius: BorderRadius.circular(20.0),
-                            child: Image(
-                              width: 100.0,
-                              height: 120,
-                              image: NetworkImage(article.urlToImage!),
-                              fit: BoxFit.cover,
+                            child: Hero(
+                              tag: article.urlToImage!,
+                              child: Image(
+                                width: 100.0,
+                                height: 120,
+                                image: NetworkImage(article.urlToImage!),
+                                fit: BoxFit.cover,
+                              ),
                             ))),
                   )
                 : Padding(padding: EdgeInsets.symmetric(vertical: 60)),

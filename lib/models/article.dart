@@ -4,12 +4,14 @@ import 'dart:convert';
 class Article {
   final String? title;
   final String? description;
+  final String? content;
   final String? url;
   final String? urlToImage;
   final String? publishedAt;
   Article({
     this.title,
     this.description,
+    this.content,
     this.url,
     this.urlToImage,
     this.publishedAt,
@@ -18,6 +20,7 @@ class Article {
   Article copyWith({
     String? title,
     String? description,
+    String? content,
     String? url,
     String? urlToImage,
     String? publishedAt,
@@ -25,6 +28,7 @@ class Article {
     return Article(
       title: title ?? this.title,
       description: description ?? this.description,
+      content: content ?? this.content,
       url: url ?? this.url,
       urlToImage: urlToImage ?? this.urlToImage,
       publishedAt: publishedAt ?? this.publishedAt,
@@ -35,6 +39,7 @@ class Article {
     return <String, dynamic>{
       'title': title,
       'description': description,
+      'content': content,
       'url': url,
       'urlToImage': urlToImage,
       'publishedAt': publishedAt,
@@ -45,6 +50,7 @@ class Article {
     return Article(
       title: map['title'] != null ? map['title'] as String : null,
       description: map['description'] != null ? map['description'] as String : null,
+      content: map['content'] != null ? map['content'] as String : null,
       url: map['url'] != null ? map['url'] as String : null,
       urlToImage: map['urlToImage'] != null ? map['urlToImage'] as String : null,
       publishedAt: map['publishedAt'] != null ? map['publishedAt'] as String : null,
@@ -57,7 +63,7 @@ class Article {
 
   @override
   String toString() {
-    return 'Article(title: $title, description: $description, url: $url, urlToImage: $urlToImage, publishedAt: $publishedAt)';
+    return 'Article(title: $title, description: $description, content: $content, url: $url, urlToImage: $urlToImage, publishedAt: $publishedAt)';
   }
 
   @override
@@ -67,6 +73,7 @@ class Article {
     return 
       other.title == title &&
       other.description == description &&
+      other.content == content &&
       other.url == url &&
       other.urlToImage == urlToImage &&
       other.publishedAt == publishedAt;
@@ -76,6 +83,7 @@ class Article {
   int get hashCode {
     return title.hashCode ^
       description.hashCode ^
+      content.hashCode ^
       url.hashCode ^
       urlToImage.hashCode ^
       publishedAt.hashCode;

@@ -18,7 +18,7 @@ class HeadLineCard extends StatelessWidget {
       Container(
         height: 400,
         child: ClipRRect(
-          child: (article.urlToImage!=null)
+          child: (article.urlToImage!.isNotEmpty)
               ? Image(
                   image: NetworkImage(article.urlToImage!),
                   fit: BoxFit.cover,
@@ -53,6 +53,22 @@ class HeadLineCard extends StatelessWidget {
             maxLines: 2,
             style: TextStyle(
                 color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+        ),
+      ),
+      Positioned(
+        top: 20,
+        right: 20,
+        child: Container(
+          decoration: BoxDecoration(
+              color: Color(0xffbff2950),
+              borderRadius: BorderRadius.circular(10)),
+          child: Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Icon(
+              Icons.bookmark_add,
+              color: Colors.white,
+            ),
           ),
         ),
       )

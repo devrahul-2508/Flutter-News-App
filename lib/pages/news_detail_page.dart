@@ -3,20 +3,17 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_news_app/models/article.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class NewsDetailScreen extends StatelessWidget {
   const NewsDetailScreen({super.key, required this.article});
 
   final Article article;
 
-  void launchUrl() async{
-     const url = 'https://flutter.io';
-  final uri = Uri.parse(url);
-  if (await canLaunchUrl(uri)) {
-    await launchUrl(uri);
-  } else {
-    throw 'Could not launch $url';
-  }
+  Future<void> _launchUrl() async {
+    if (!await launchUrl(Uri.parse(article.url!))) {
+      throw 'Could not launch $article.url';
+    }
   }
 
   @override
@@ -98,17 +95,98 @@ class NewsDetailScreen extends StatelessWidget {
               ),
             )
           ]),
-          SizedBox(height: 50),
+          SizedBox(height: 35),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Expanded(
+              child: Row(
+                children: [
+                  Container(
+                      width: 50,
+                      height: 50,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(100)),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(30),
+                        child: Image(
+                          image: AssetImage("assets/images/news.png"),
+                          fit: BoxFit.cover,
+                        ),
+                      )),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "BBC NEWS",
+                              style: TextStyle(
+                                  color: Color(0xff192e51),
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              "@bbcindia",
+                              style: TextStyle(color: Colors.grey.shade500),
+                            )
+                          ],
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                              color: Color(0xffbff2950),
+                              borderRadius: BorderRadius.circular(30)),
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Text(
+                              "Follow+",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 20,
+          ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 20),
             child: Container(
-              child: Text(article.content!),
+              child: Text(
+                article.content!,
+                style: TextStyle(fontSize: 16),
+              ),
             ),
-          )
+          ),
+          SizedBox(
+            height: 15,
+          ),
+          ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xffbff2950), elevation: 5.0),
+              onPressed: _launchUrl,
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Text(
+                  "Read More",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18),
+                ),
+              ))
         ],
       ),
     );
   }
 }
-
-

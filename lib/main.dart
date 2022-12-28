@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_news_app/pages/homepage.dart';
 import 'package:flutter_news_app/pages/news_detail_page.dart';
+import 'package:flutter_news_app/themes/themes.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,6 +16,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       home: HomePage(),
       debugShowCheckedModeBanner: false,
+      themeMode: ThemeMode.system,
+      theme: MyTheme.lightTheme(context),
+      darkTheme: MyTheme.darkTheme(context),
     );
   }
 }

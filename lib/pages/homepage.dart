@@ -8,9 +8,11 @@ import 'package:flutter_news_app/models/article.dart';
 import 'package:flutter_news_app/models/newsrespone.dart';
 import 'package:flutter_news_app/network/dio_client.dart';
 import 'package:flutter_news_app/pages/news_detail_page.dart';
+import 'package:flutter_news_app/provider/appstatenotifier.dart';
 import 'package:flutter_news_app/widgets/headline_card.dart';
 import 'package:flutter_news_app/widgets/news_tile.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -22,6 +24,7 @@ class HomePage extends StatefulWidget {
 NewsResponse? response;
 NewsResponse? headerresponse = null;
 bool _enabled = false;
+late bool isDarkMode;
 
 Future getArticle(String category) async {
   try {
@@ -145,6 +148,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    isDarkMode =
+        Provider.of<AppStateProvider>(context, listen: false).isDarkMode;
     return Scaffold(
         appBar: AppBar(
           title: Text(
@@ -154,15 +159,31 @@ class _HomePageState extends State<HomePage> {
           backgroundColor: Colors.transparent,
           actions: <Widget>[
             IconButton(
-              icon: Icon(
-                Icons.notifications_on_outlined,
-                color: Theme.of(context).iconTheme.color,
-                size: 25,
-              ),
+              // icon: Icon(
+              //   Icons.notification_important_outlined,
+              //   color: Theme.of(context).iconTheme.color,
+              //   size: 25,
+              // ),
+
+              icon: (isDarkMode)
+                  ? Icon(
+                      Icons.dark_mode,
+                      color: Theme.of(context).iconTheme.color,
+                      size: 25,
+                    )
+                  : Icon(
+                      Icons.light_mode,
+                      color: Theme.of(context).iconTheme.color,
+                      size: 25,
+                    ),
               onPressed: () {
-                // do something
+                isDarkMode = !isDarkMode;
+                print(isDarkMode);
+
+                Provider.of<AppStateProvider>(context, listen: false)
+                    .updateTheme(isDarkMode);
               },
-            )
+            ),
           ],
           elevation: 0.0,
         ),

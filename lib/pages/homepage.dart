@@ -8,9 +8,11 @@ import 'package:flutter_news_app/models/article.dart';
 import 'package:flutter_news_app/models/newsrespone.dart';
 import 'package:flutter_news_app/network/dio_client.dart';
 import 'package:flutter_news_app/pages/news_detail_page.dart';
+import 'package:flutter_news_app/provider/appstatenotifier.dart';
 import 'package:flutter_news_app/widgets/headline_card.dart';
 import 'package:flutter_news_app/widgets/news_tile.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -22,6 +24,7 @@ class HomePage extends StatefulWidget {
 NewsResponse? response;
 NewsResponse? headerresponse = null;
 bool _enabled = false;
+late bool isDarkMode;
 
 Future getArticle(String category) async {
   try {
@@ -92,12 +95,14 @@ class _HomePageState extends State<HomePage> {
                     : ListView.builder(
                         itemCount: response?.articles.length,
                         itemBuilder: (context, index) {
-                        
                           return GestureDetector(
-                            
-                            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context)=> NewsDetailScreen(article: response!.articles[index] ))),
-                            
-                            child: NewsTile(article: response!.articles[index]));
+                              onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => NewsDetailScreen(
+                                          article: response!.articles[index]))),
+                              child:
+                                  NewsTile(article: response!.articles[index]));
                         });
               })),
     );
@@ -126,13 +131,10 @@ class _HomePageState extends State<HomePage> {
                 child: Chip(
                   label: Padding(
                     padding: const EdgeInsets.all(5.0),
-                    child: Text(
-                      categories[index],
-                      style: TextStyle(
-                          color: selectedIndex == index
-                              ? Colors.white
-                              : Colors.black),
-                    ),
+                    child: Text(categories[index],
+                        style: selectedIndex == index
+                            ? Theme.of(context).textTheme.headline2
+                            : Theme.of(context).textTheme.headline3),
                   ),
                   backgroundColor: selectedIndex == index
                       ? Color(0xff192e51)
@@ -146,24 +148,42 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    isDarkMode =
+        Provider.of<AppStateProvider>(context, listen: false).isDarkMode;
     return Scaffold(
         appBar: AppBar(
           title: Text(
             "Newzia",
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.headline1,
           ),
           backgroundColor: Colors.transparent,
           actions: <Widget>[
             IconButton(
-              icon: Icon(
-                Icons.notifications_on_outlined,
-                color: Colors.black,
-                size: 25,
-              ),
+              // icon: Icon(
+              //   Icons.notification_important_outlined,
+              //   color: Theme.of(context).iconTheme.color,
+              //   size: 25,
+              // ),
+
+              icon: (isDarkMode)
+                  ? Icon(
+                      Icons.dark_mode,
+                      color: Theme.of(context).iconTheme.color,
+                      size: 25,
+                    )
+                  : Icon(
+                      Icons.light_mode,
+                      color: Theme.of(context).iconTheme.color,
+                      size: 25,
+                    ),
               onPressed: () {
-                // do something
+                isDarkMode = !isDarkMode;
+                print(isDarkMode);
+
+                Provider.of<AppStateProvider>(context, listen: false)
+                    .updateTheme(isDarkMode);
               },
-            )
+            ),
           ],
           elevation: 0.0,
         ),

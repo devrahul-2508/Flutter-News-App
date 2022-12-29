@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_news_app/models/article.dart';
+import 'package:flutter_news_app/themes/themes.dart';
 
 class NewsTile extends StatelessWidget {
   const NewsTile({super.key, required this.article});
@@ -15,7 +16,7 @@ class NewsTile extends StatelessWidget {
       child: Container(
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
-            color: Color(0xffbe9e9f0),
+            color: Theme.of(context).cardColor,
             borderRadius: BorderRadius.circular(20.0)),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -26,7 +27,6 @@ class NewsTile extends StatelessWidget {
                         horizontal: 10, vertical: 20),
                     child: Container(
                         decoration: BoxDecoration(
-                            color: Colors.white,
                             borderRadius: BorderRadius.circular(20.0)),
                         child: ClipRRect(
                             borderRadius: BorderRadius.circular(20.0),
@@ -51,10 +51,7 @@ class NewsTile extends StatelessWidget {
                     child: Text(
                       article.title!,
                       maxLines: 2,
-                      style: TextStyle(
-                          fontSize: 16,
-                          color: Color(0xffb192e51),
-                          fontWeight: FontWeight.bold),
+                      style: Theme.of(context).textTheme.bodyText1,
                     ),
                   ),
                   Text(

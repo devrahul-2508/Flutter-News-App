@@ -123,12 +123,8 @@ class NewsDetailScreen extends StatelessWidget {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              "BBC NEWS",
-                              style: TextStyle(
-                                  color: Color(0xff192e51),
-                                  fontWeight: FontWeight.bold),
-                            ),
+                            Text("BBC NEWS",
+                                style: Theme.of(context).textTheme.bodyText1),
                             Text(
                               "@bbcindia",
                               style: TextStyle(color: Colors.grey.shade500),

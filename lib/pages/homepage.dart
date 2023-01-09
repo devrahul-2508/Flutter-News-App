@@ -148,8 +148,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    isDarkMode =
-        Provider.of<AppStateProvider>(context, listen: false).isDarkMode;
+    isDarkMode = context.watch<AppStateProvider>().isDarkMode;
     return Scaffold(
         appBar: AppBar(
           title: Text(
@@ -180,8 +179,8 @@ class _HomePageState extends State<HomePage> {
                 isDarkMode = !isDarkMode;
                 print(isDarkMode);
 
-                Provider.of<AppStateProvider>(context, listen: false)
-                    .updateTheme(isDarkMode);
+               
+                context.read<AppStateProvider>().updateTheme(isDarkMode);
               },
             ),
           ],
